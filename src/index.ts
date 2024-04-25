@@ -23,5 +23,7 @@ if (exitCode !== 0) {
     const error = String(stderr)
     if (error.includes('already exists')) {
         await $`git checkout ${gitBranchName}`.nothrow().quiet()
+    } else {
+        console.log(`Oops: ${error}`)
     }
 }
