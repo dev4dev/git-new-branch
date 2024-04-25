@@ -1,11 +1,21 @@
 import  { $ } from 'bun'
 
-const params = process.argv.slice(2).map(x => {
-    return x.toLowerCase()
-}).join('-')
+function formatArgs(args: string[]): string {
+    return args.filter(x => {
+        return x.length > 0
+    })
+    .map(x => {
+        return x.replaceAll(/[^\w ]+/gi, '')
+            .replaceAll(/[ ]+/gi, '-')
+    })
+    .join('-')
+    .toLowerCase()
+}
+
+const params = process.argv.slice(2)
 const name: string = await $`whoami`.text()
 
-let gitBranchName = `${name.trim()}/${params}`
+let gitBranchName = `${name.trim()}/${formatArgs(params)}`
 
 const { stdout, stderr, exitCode } = await $`git checkout -b ${gitBranchName}`.nothrow().quiet()
 
